@@ -1,0 +1,26 @@
+// ===========================================
+// GameDay SaaS - Prisma Schema
+// ===========================================
+// This schema defines the database structure.
+// Run `npx prisma migrate dev` to apply changes.
+// Run `npx prisma generate` to update the client.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===========================================
+// Models will be added in subsequent phases:
+// ===========================================
+// Phase 2: User (authentication)
+// Phase 3: League, LeagueMembership (multi-tenancy)
+// Phase 4: Invitation (invite system)
+// Phase 5: Team
+// Phase 6: Game
+// ===========================================
