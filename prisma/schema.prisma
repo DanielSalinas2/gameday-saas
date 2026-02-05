@@ -6,7 +6,7 @@
 // Run `npx prisma generate` to update the client.
 
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
 

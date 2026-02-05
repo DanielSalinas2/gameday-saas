@@ -1,25 +1,33 @@
-import { auth } from "@/lib/auth";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
-export default auth((req) => {
-  const isLoggedIn = !!req.auth;
-  const isAuthPage = req.nextUrl.pathname.startsWith("/login") || 
-                     req.nextUrl.pathname.startsWith("/register");
-  const isDashboardPage = req.nextUrl.pathname.startsWith("/dashboard");
+export function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
 
-  // Redirect logged-in users away from auth pages
-  if (isAuthPage && isLoggedIn) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+  // ✅ Rutas públicas
+  if (
+    pathname === "/" ||
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/register") ||
+    pathname.startsWith("/api/auth") ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/favicon.ico")
+  ) {
+    return NextResponse.next();
   }
 
-  // Redirect non-logged-in users away from dashboard
-  if (isDashboardPage && !isLoggedIn) {
+  // ✅ Leer cookie de sesión (NO Prisma, NO NextAuth aquí)
+  const sessionToken =
+    req.cookies.get("next-auth.session-token") ||
+    req.cookies.get("__Secure-next-auth.session-token");
+
+  // 🔒 Proteger dashboard
+  if (pathname.startsWith("/dashboard") && !sessionToken) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
   return NextResponse.next();
-});
+}
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!_next/static|_next/image).*)"],
 };
