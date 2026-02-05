@@ -12,13 +12,25 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // ===========================================
-// Models will be added in subsequent phases:
+// PHASE 2: User Model (Authentication)
 // ===========================================
-// Phase 2: User (authentication)
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  name         String?
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("users")
+}
+
+// ===========================================
+// Future phases:
+// ===========================================
 // Phase 3: League, LeagueMembership (multi-tenancy)
 // Phase 4: Invitation (invite system)
 // Phase 5: Team

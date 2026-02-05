@@ -47,11 +47,18 @@ A multi-tenant SaaS platform for managing amateur sports leagues.
    ```bash
    cp .env.example .env
    ```
-   Then edit `.env` with your database connection string.
+   Then edit `.env`:
+   - Add your PostgreSQL database URL to `DATABASE_URL`
+   - Generate and add an auth secret:
+     ```bash
+     openssl rand -base64 32
+     ```
+     Copy the output to `AUTH_SECRET` in `.env`
 
 4. Set up the database:
    ```bash
-   npx prisma migrate dev
+   npx prisma migrate dev --name init
+   npx prisma generate
    ```
 
 5. Start the development server:
@@ -84,7 +91,7 @@ src/
 ## Development Phases
 
 - [x] Phase 1: Project Foundation
-- [ ] Phase 2: Authentication System
+- [x] Phase 2: Authentication System
 - [ ] Phase 3: League Management (Multi-Tenancy)
 - [ ] Phase 4: Invitation System
 - [ ] Phase 5: Team Management
@@ -92,6 +99,30 @@ src/
 - [ ] Phase 7: Standings & Calendar
 - [ ] Phase 8: White-Label & Polish
 - [ ] Phase 9: Production Readiness
+
+## Testing the App
+
+### Local Development
+
+After setup, test authentication:
+
+1. Start the dev server: `npm run dev`
+2. Visit http://localhost:3000
+3. Click "Get Started" to create an account
+4. After registration, you'll be redirected to the dashboard
+5. Test logout and login functionality
+
+### GitHub Codespaces
+
+1. Open your Codespace
+2. Run `cp .env.example .env`
+3. Edit `.env` and set `DATABASE_URL` (use Supabase or Neon for hosted PostgreSQL)
+4. Generate auth secret: `openssl rand -base64 32` and add to `.env` as `AUTH_SECRET`
+5. Run migrations: `npx prisma migrate dev --name init`
+6. Start server: `npm run dev`
+7. Open the forwarded port (shown in PORTS tab)
+
+**Note**: In Codespaces, the dev server will be accessible via a forwarded URL like `https://[codespace-name]-3000.app.github.dev`
 
 ## License
 
